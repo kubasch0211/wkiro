@@ -1,3 +1,11 @@
-from ReadFile import readFile
+from ProcessData import process_dataset
+from TrainModel import train_model
+from TestModel import test_model
 
-readFile('DataSet/AJ026/Session1/Overground_Walk/Walk_Comfortable/Post_Process/Walk_Comfortable1.c3d')
+def main():
+    data_path = "./DataSet"
+    process_dataset(data_path)
+    train_model()
+    test_model()
+
+main()
