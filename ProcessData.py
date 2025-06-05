@@ -23,16 +23,15 @@ def extract_features_from_file(path):
     LElbowAngles = [frame[6][0] for frame in frames]
     RElbowAngles = [frame[7][0] for frame in frames]
 
-    # print("KneeAngles       diff: ", round(abs(np.mean(LKneeAngles)-np.mean(RKneeAngles)) ,2), "    mean mean: ", round((np.mean(LKneeAngles)+np.mean(RKneeAngles))/2, 2), ",    mean L: ", round(np.mean(LKneeAngles), 2), ",    mean R", round(np.mean(RKneeAngles), 2))
-    # print("HipAngles        diff: ", round(abs(np.mean(LHipAngles)-np.mean(RHipAngles)), 2), "    mean mean: ", round((np.mean(LHipAngles)+np.mean(RHipAngles))/2, 2), "    mean L: ", round(np.mean(LHipAngles), 2), ",    mean R", round(np.mean(RHipAngles), 2))
-    # print("ShoulderAngles   diff: ", round(abs(np.mean(LShoulderAngles)-np.mean(RShoulderAngles)), 2), "    mean mean: ", round((np.mean(LShoulderAngles)+np.mean(RShoulderAngles))/2, 2), ",    mean L: ", round(np.mean(LShoulderAngles), 2), ",    mean R", round(np.mean(RShoulderAngles), 2))
-    # print("ElbowAngles      diff: ", round(abs(np.mean(LElbowAngles)-np.mean(RElbowAngles)), 2), "    mean mean: ", round((np.mean(LElbowAngles)+np.mean(RElbowAngles))/2, 2), ",    mean L: ", round(np.mean(LElbowAngles), 2), ",    mean R", round(np.mean(RElbowAngles), 2))
-
     return {
-        'KneeAnglesDiff': round(abs(np.mean(LKneeAngles)-np.mean(RKneeAngles)) ,2),
-        'HipAnglesDiff': round(abs(np.mean(LHipAngles)-np.mean(RHipAngles)) ,2),
-        'ShoulderAnglesDiff': round(abs(np.mean(LShoulderAngles)-np.mean(RShoulderAngles)) ,2),
-        'ElbowAnglesDiff': round(abs(np.mean(LElbowAngles)-np.mean(RElbowAngles)) ,2),
+        'LKneeAngles': (LKneeAngles),
+        'RKneeAngles': (RKneeAngles),
+        'LHipAngles': (LHipAngles),
+        'RHipAngles': (RHipAngles),
+        'LShoulderAngles': (LShoulderAngles),
+        'RShoulderAngles': (RShoulderAngles),
+        'LElbowAngles': (LElbowAngles),
+        'RElbowAngles': (RElbowAngles),
     }
 
 def process_dataset(root_dir, output_file):
