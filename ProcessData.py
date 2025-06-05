@@ -1,10 +1,12 @@
 import os
 import numpy as np
 import c3d
+import ezc3d
 import pickle
 
 def extract_features_from_file(path):
-    selected_markers = ['LANK', 'RANK', 'LKNE', 'RKNE', 'LASI', 'RASI', 'LSHO', 'RSHO', 'LELB', 'RELB', 'LWRA', 'RWRA']
+    selected_markers = ['LKneeAngles', 'RKneeAngles', 'LHipAngles', 'RHipAngles', 'LShoulderAngles', 'RShoulderAngles', "LElbowAngles", "RElbowAngles"]
+
     with open(path, 'rb') as handle:
         reader = c3d.Reader(handle)
         labels = reader.point_labels
@@ -12,21 +14,28 @@ def extract_features_from_file(path):
         frames = [ [points[i, :3] for i in marker_indices] for _, points, _ in reader.read_frames() ]
 
     frames = np.array(frames)
-    coords = frames[:, 0, :]
+    LKneeAngles = [frame[0][0] for frame in frames]
+    RKneeAngles = [frame[1][0] for frame in frames]
+    LHipAngles = [frame[2][0] for frame in frames]
+    RHipAngles = [frame[3][0] for frame in frames]
+    LShoulderAngles = [frame[4][0] for frame in frames]
+    RShoulderAngles = [frame[5][0] for frame in frames]
+    LElbowAngles = [frame[6][0] for frame in frames]
+    RElbowAngles = [frame[7][0] for frame in frames]
 
-    # for i in range(len(frames)):
-    #     print("frame: ", frames[i])
-    #     print("coord: ", coords[i], '\n')
-
-    velocities = np.linalg.norm(np.diff(coords, axis=0), axis=1)
     return {
-        'mean_velocity': np.mean(velocities),
-        'std_velocity': np.std(velocities),
-        'range_z': np.ptp(coords[:, 2])
+        'LKneeAngles': (LKneeAngles),
+        'RKneeAngles': (RKneeAngles),
+        'LHipAngles': (LHipAngles),
+        'RHipAngles': (RHipAngles),
+        'LShoulderAngles': (LShoulderAngles),
+        'RShoulderAngles': (RShoulderAngles),
+        'LElbowAngles': (LElbowAngles),
+        'RElbowAngles': (RElbowAngles),
     }
 
-def process_dataset(root_dir, output_file='Data/data.pkl'):
-    Coords, MoveType = [], []
+def process_dataset(root_dir, output_file):
+    MoveData, MoveType = [], []
     for subject in os.listdir(root_dir):
         subj_path = os.path.join(root_dir, subject)
         if not os.path.isdir(subj_path):
@@ -47,17 +56,12 @@ def process_dataset(root_dir, output_file='Data/data.pkl'):
                             full_path = os.path.join(data_path, file)
                             try:
                                 feats = extract_features_from_file(full_path)
-                                Coords.append(list(feats.values()))
+                                MoveData.append(list(feats.values()))
                                 MoveType.append(label)
                                 print(f"Processed: {full_path}")
                             except Exception as e:
                                 print(f"Error processing {full_path}: {e}")
 
-    # print(Coords)
-    # print(len(Coords))
-    # print(MoveType)
-    # print(len(MoveType))
-
     with open(output_file, 'wb') as f:
-        pickle.dump((np.array(Coords), np.array(MoveType)), f)
+        pickle.dump((np.array(MoveData), np.array(MoveType)), f)
     print(f"Dane zapisane do {output_file}")
