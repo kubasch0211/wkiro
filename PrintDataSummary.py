@@ -1,7 +1,12 @@
+"""
+Wyswietlenie zestawienia dotyczacego danych programowych.
+"""
+
 import os
 import c3d
 import numpy as np
 import matplotlib
+import seaborn as sns
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
@@ -37,24 +42,36 @@ def get_sequence_lengths(root_dir):
     return lengths
 
 # Użycie:
-root_dir = 'C:\WKIRO\wkiro\TrainDataSet'  # <-- ustaw własną ścieżkę
+root_dir = 'C:\WKIRO\wkiro\TrainDataSet'
 lengths = get_sequence_lengths(root_dir)
 
 # Statystyki
 lengths = np.array(lengths)
-print("\n--- Statystyki długości sekwencji ---")
+print("\n--- Statystyki liczby klatek ---")
 print(f"Min:     {np.min(lengths)}")
 print(f"Max:     {np.max(lengths)}")
-print(f"Średnia: {np.mean(lengths):.2f}")
-print(f"Mediana: {np.median(lengths)}")
-print(f"10 percentyl: {np.percentile(lengths, 10)}")
-print(f"90 percentyl: {np.percentile(lengths, 90)}")
-print(f"Liczba plików: {len(lengths)}")
+print(f"Srednia: {np.mean(lengths):.2f}")
+print(f"Liczba plikow: {len(lengths)}")
 
-# (Opcjonalnie) Wykres
-plt.hist(lengths, bins=30, color='skyblue', edgecolor='black')
-plt.title('Rozkład długości sekwencji (.c3d)')
-plt.xlabel('Liczba klatek')
-plt.ylabel('Liczba plików')
-plt.grid(True)
+plt.figure(figsize=(10, 6))
+sns.set_style("whitegrid")
+
+# Histogram
+n, bins, patches = plt.hist(lengths, bins=30, color='skyblue', edgecolor='black', alpha=0.85)
+
+# Tytuł i etykiety
+plt.title('Rozklad liczby klatek w plikach', fontsize=14)
+plt.xlabel('Liczba klatek', fontsize=12)
+plt.ylabel('Liczba plikow', fontsize=12)
+
+# Siatka i styl
+plt.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
+
+# Dodanie wartości liczbowych nad słupkami
+for count, x in zip(n, bins[:-1]):
+    if count > 0:
+        plt.text(x + (bins[1] - bins[0]) / 2, count + 0.5, str(int(count)),
+                 ha='center', va='bottom', fontsize=9, rotation=0)
+
+plt.tight_layout()
 plt.show()

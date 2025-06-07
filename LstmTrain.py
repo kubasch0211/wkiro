@@ -1,4 +1,7 @@
-import numpy as np
+"""
+Trening modelu LSTM.
+"""
+
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset

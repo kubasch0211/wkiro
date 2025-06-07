@@ -1,8 +1,8 @@
-import c3d
-
 '''
 Odczytywanie i wypisanie dostepnych w pliku .c3d markerow
 '''
+
+import c3d
 
 with open("C:\WKIRO\wkiro\TrainDataSet\CF027\Session1\Overground_Run\Run_Comfortable\Post_Process\Run_Comfortable1.c3d", "rb") as f:
     reader = c3d.Reader(f)

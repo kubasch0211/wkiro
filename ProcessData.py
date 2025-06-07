@@ -1,3 +1,7 @@
+"""
+Przygotowanie danych dla modelu. Wyswietlenie statystyk.
+"""
+
 import numpy as np
 import os
 import c3d
@@ -35,7 +39,6 @@ def extract_windows_from_file(path, window_size=WINDOW_SIZE, step_size=STEP_SIZE
     return windows
 
 def process_dataset(root_dir, output_file='processed_data.pkl'):
-    MoveData, MoveType = [], []
     MoveData, MoveType = [], []
     lengths = []
 
@@ -78,19 +81,19 @@ def process_dataset(root_dir, output_file='processed_data.pkl'):
     print(f"Dane zapisane do {output_file}")
 
     # Podsumowanie
-    print("\n--- Statystyki długości okien na plik ---")
+    print("\n--- Statystyki dlugosci okien ---")
     print(f"Min: {np.min(lengths)}")
     print(f"Max: {np.max(lengths)}")
-    print(f"Średnia: {np.mean(lengths):.2f}")
-    print(f"Mediana: {np.median(lengths)}")
-    print(f"Liczba plików: {len(lengths)}")
+    print(f"Srednia: {np.mean(lengths):.2f}")
+    print(f"Liczba plikow: {len(lengths)}")
 
-    # Wykres histogramu długości okien
-    plt.hist(lengths, bins=20, alpha=0.7)
-    plt.xlabel('Liczba okien z pliku')
-    plt.ylabel('Liczba plików')
-    plt.title('Rozkład liczby okien na plik')
-    plt.show()
+
+    # Tekstowe podsumowanie rozkładu liczby okien
+    print("\n--- Rozklad liczby okien na plik ---")
+    unique_lengths, counts = np.unique(lengths, return_counts=True)
+    for l, c in zip(unique_lengths, counts):
+        print(f"{l} okien: {c} plików")
+    print(f"Laczna liczba okien: {sum(lengths)}")
 
     # --- Testy weryfikacyjne ---
 
@@ -102,10 +105,10 @@ def process_dataset(root_dir, output_file='processed_data.pkl'):
     print(f"Unikalne etykiety: {unique_labels}")
 
     all_correct_length = all(window.shape[0] == WINDOW_SIZE for window in MoveData)
-    print(f"Czy wszystkie okna mają długość {WINDOW_SIZE}? {all_correct_length}")
+    print(f"Czy wszystkie okna maja dlugosc {WINDOW_SIZE}? {all_correct_length}")
 
     zero_windows = [i for i, w in enumerate(MoveData) if np.all(w == 0)]
-    print(f"Liczba całkowicie zerowych okien: {len(zero_windows)}")
+    print(f"Liczba calkowicie zerowych okien: {len(zero_windows)}")
 
     # Wizualizacja przykładowego okna (pierwszego niezerowego)
     for i, w in enumerate(MoveData):
@@ -117,8 +120,8 @@ def process_dataset(root_dir, output_file='processed_data.pkl'):
     plt.plot(sample_window[:, 0], label='LKneeAngles_x')
     plt.plot(sample_window[:, 1], label='LKneeAngles_y')
     plt.plot(sample_window[:, 2], label='LKneeAngles_z')
-    plt.title('Przykładowy marker LKneeAngles w czasie (okno)')
+    plt.title('Marker LKneeAngles - wartosci)')
     plt.xlabel('Klatka')
-    plt.ylabel('Wartość')
+    plt.ylabel('Wartosc')
     plt.legend()
     plt.show()
