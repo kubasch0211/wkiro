@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 from tqdm import tqdm
 
-# HYPERPARAMS
+# HYPERPARAMETRY
 WINDOW_SIZE = 100
 NUM_FEATURES = 24  # 8 markerów * 3 (x,y,z)
 HIDDEN_SIZE = 64
@@ -21,15 +21,15 @@ class MyLSTMModel(nn.Module):
             hidden_size,
             num_layers,
             batch_first=True,
-            dropout=dropout if num_layers > 1 else 0  # dropout w LSTM, tylko gdy num_layers > 1
+            dropout=dropout if num_layers > 1 else 0
         )
-        self.dropout = nn.Dropout(dropout)  # dodatkowy dropout
+        self.dropout = nn.Dropout(dropout)
         self.fc = nn.Linear(hidden_size, num_classes)
 
     def forward(self, x):
         out, _ = self.lstm(x)
-        out = out[:, -1, :]          # ostatni krok czasowy
-        out = self.dropout(out)      # dropout przed warstwą fc
+        out = out[:, -1, :]  # ostatni krok czasowy
+        out = self.dropout(out)
         out = self.fc(out)
         return out
 
@@ -51,7 +51,6 @@ def train_model(X, y):
         model.train()
         total_loss = 0
 
-        # Używamy tqdm, by pokazać pasek postępu dla batchy
         loop = tqdm(dataloader, desc=f"Epoch [{epoch+1}/{EPOCHS}]", leave=False)
         for batch_x, batch_y in loop:
             batch_x, batch_y = batch_x.to(device), batch_y.to(device)
@@ -63,7 +62,6 @@ def train_model(X, y):
             optimizer.step()
 
             total_loss += loss.item()
-            # aktualizacja paska postępu: wyświetlamy aktualny średni loss
             loop.set_postfix(loss=f"{total_loss / (loop.n + 1):.4f}")
 
         avg_loss = total_loss / len(dataloader)
@@ -72,13 +70,15 @@ def train_model(X, y):
     print("Trening zakończony")
     return model
 
-# PRZYKŁADOWE WYWOŁANIE:
-if __name__ == "__main__":
+def train_from_pkl(pkl_path, output_model_path="model.pth"):
     import pickle
-    with open('C:/WKIRO/wkiro/Data/trainData.pkl', 'rb') as f:
+
+    with open(pkl_path, 'rb') as f:
         data = pickle.load(f)
-    X = data['X']  # kształt: (num_samples, WINDOW_SIZE, num_features)
+
+    X = data['X']
     y = data['y']
 
     model = train_model(X, y)
-    torch.save(model.state_dict(), "model.pth")
+    torch.save(model.state_dict(), output_model_path)
+    print(f"Model saved to {output_model_path}")

@@ -7,8 +7,6 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, accuracy_score
-
-# --- Definicja modelu (taka sama jak przy trenowaniu) ---
 import torch.nn as nn
 
 
@@ -32,7 +30,7 @@ class MyLSTMModel(nn.Module):
         out = self.fc(out)
         return out
 
-# --- Testowanie modelu i wizualizacja macierzy ---
+
 def test_model(model, X_test, y_test, batch_size=32):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
@@ -72,9 +70,8 @@ def test_model(model, X_test, y_test, batch_size=32):
     return acc
 
 
-# --- Główna część ---
-if __name__ == "__main__":
-    with open('C:/WKIRO/wkiro/Data/testData.pkl', 'rb') as f:
+def test_from_pkl(pkl_path, model_path="model.pth"):
+    with open(pkl_path, 'rb') as f:
         data = pickle.load(f)
     X_test = data['X']
     y_test = data['y']
@@ -85,6 +82,11 @@ if __name__ == "__main__":
     num_classes = 2
 
     model = MyLSTMModel(input_size, hidden_size, num_layers, num_classes)
-    model.load_state_dict(torch.load("model.pth", map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
 
-    test_model(model, X_test, y_test)
+    return test_model(model, X_test, y_test)
+
+
+if __name__ == "__main__":
+    # Przykładowe uruchomienie bezpośrednie (opcjonalne)
+    test_from_pkl('Data/testData.pkl', "model.pth")
