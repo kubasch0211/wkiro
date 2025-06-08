@@ -10,6 +10,7 @@ import seaborn as sns
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
+
 def get_sequence_lengths(root_dir):
     lengths = []
 
@@ -40,6 +41,7 @@ def get_sequence_lengths(root_dir):
                                 print(f"Błąd w {full_path}: {e}")
 
     return lengths
+
 
 # Użycie:
 root_dir = 'C:\WKIRO\wkiro\TrainDataSet'

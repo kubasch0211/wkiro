@@ -1,6 +1,6 @@
-'''
+"""
 Odczytywanie i wypisanie dostepnych w pliku .c3d markerow
-'''
+"""
 
 import c3d
 

@@ -16,6 +16,7 @@ SELECTED_MARKERS = ['LKneeAngles', 'RKneeAngles', 'LHipAngles', 'RHipAngles',
 WINDOW_SIZE = 100  # długość okna (liczba klatek)
 STEP_SIZE = 50     # przesunięcie okna (np. połowa długości okna)
 
+
 def extract_windows_from_file(path, window_size=WINDOW_SIZE, step_size=STEP_SIZE):
     with open(path, 'rb') as handle:
         reader = c3d.Reader(handle)
@@ -37,6 +38,7 @@ def extract_windows_from_file(path, window_size=WINDOW_SIZE, step_size=STEP_SIZE
         window = frames[start:start+window_size]
         windows.append(window)
     return windows
+
 
 def process_dataset(root_dir, output_file='processed_data.pkl'):
     MoveData, MoveType = [], []
@@ -86,7 +88,6 @@ def process_dataset(root_dir, output_file='processed_data.pkl'):
     print(f"Max: {np.max(lengths)}")
     print(f"Srednia: {np.mean(lengths):.2f}")
     print(f"Liczba plikow: {len(lengths)}")
-
 
     # Tekstowe podsumowanie rozkładu liczby okien
     print("\n--- Rozklad liczby okien na plik ---")
