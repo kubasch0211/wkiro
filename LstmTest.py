@@ -6,11 +6,12 @@ import pickle
 import seaborn as sns
 import matplotlib
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 matplotlib.use('TkAgg')
+
 
 class MyLSTMModel(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, num_classes, dropout=0.5):
@@ -55,12 +56,20 @@ def test_model(model, MoveData_test, MoveType_test, batch_size=32):
             all_labels.extend(batch_y.cpu().numpy())
 
     acc = accuracy_score(all_labels, all_preds)
+    precision = precision_score(all_labels, all_preds, average='macro')
+    recall = recall_score(all_labels, all_preds, average='macro')
+    f1 = f1_score(all_labels, all_preds, average='macro')
+
+    print("---Quality of classification (avg from 2 classes)---")
     print(f'Accuracy on test set: {acc * 100:.2f}%')
+    print(f'Precision:             {precision * 100:.2f}%')
+    print(f'Recall:                {recall * 100:.2f}%')
+    print(f'F1 Score:              {f1 * 100:.2f}%')
+
+    labels = ['Walk', 'Run']
 
     # Macierz pomyłek i wizualizacja
     cm = confusion_matrix(all_labels, all_preds)
-    labels = ['Walk', 'Run']
-
     plt.figure(figsize=(6, 5))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
     plt.xlabel('Predicted label')
