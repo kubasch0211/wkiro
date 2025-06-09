@@ -11,7 +11,9 @@ import matplotlib.pyplot as plt
 matplotlib.use('TkAgg')
 
 SELECTED_MARKERS = ['LKneeAngles', 'RKneeAngles', 'LHipAngles', 'RHipAngles',
-                    'LShoulderAngles', 'RShoulderAngles', 'LElbowAngles', 'RElbowAngles']
+                    'LShoulderAngles', 'RShoulderAngles', 'LElbowAngles', 'RElbowAngles',
+                    'LAnkleAngles', 'RAnkleAngles', 'LSpineAngles', 'RSpineAngles',
+                    'LANK', 'RANK', 'LKNE', 'RKNE', 'LASI', 'RASI', 'LSHO', 'RSHO', 'LELB', 'RELB', 'LWRA', 'RWRA']
 
 WINDOW_SIZE = 100  # długość okna (liczba klatek)
 STEP_SIZE = 50     # przesunięcie okna (np. połowa długości okna)
@@ -40,9 +42,12 @@ def extract_windows_from_file(path, window_size=WINDOW_SIZE, step_size=STEP_SIZE
     return windows
 
 
-def process_dataset(root_dir, output_file='processed_data.pkl'):
+def process_dataset(root_dir, output_file, datasetType):
     MoveData, MoveType = [], []
     lengths = []
+
+    if datasetType == "train": acceptedSpeedTypes = ["Walk_Slow", "Walk_Comfortable", "Run_Comfortable", "Run_Fast"]  # jeśli dane dla treningu - wczytuje tylko "Walk_Comfortable", "Run_Fast"
+    else: acceptedSpeedTypes = ["Walk_Slow", "Walk_Comfortable", "Walk_Fast", "Run_Comfortable", "Run_Fast"]  # jeśli dane dla testów - wczytuje reszte
 
     for subject in os.listdir(root_dir):
         subj_path = os.path.join(root_dir, subject)
@@ -59,21 +64,22 @@ def process_dataset(root_dir, output_file='processed_data.pkl'):
                 label = 0 if 'Walk' in trial_type else 1  # 0=walk, 1=run
 
                 for speed in os.listdir(trial_path):
-                    data_path = os.path.join(trial_path, speed, 'Post_Process')
-                    if not os.path.exists(data_path):
-                        continue
+                    if speed in acceptedSpeedTypes:
+                        data_path = os.path.join(trial_path, speed, 'Post_Process')
+                        if not os.path.exists(data_path):
+                            continue
 
-                    for file in os.listdir(data_path):
-                        if file.endswith('.c3d'):
-                            full_path = os.path.join(data_path, file)
-                            try:
-                                windows = extract_windows_from_file(full_path)
-                                MoveData.extend(windows)
-                                MoveType.extend([label] * len(windows))
-                                lengths.append(len(windows))
-                                print(f"Przetworzono {full_path}: {len(windows)} okien")
-                            except Exception as e:
-                                print(f"Błąd w {full_path}: {e}")
+                        for file in os.listdir(data_path):
+                            if file.endswith('.c3d'):
+                                full_path = os.path.join(data_path, file)
+                                try:
+                                    windows = extract_windows_from_file(full_path)
+                                    MoveData.extend(windows)
+                                    MoveType.extend([label] * len(windows))
+                                    lengths.append(len(windows))
+                                    print(f"Przetworzono {full_path}: {len(windows)} okien")
+                                except Exception as e:
+                                    print(f"Błąd w {full_path}: {e}")
 
     MoveData = np.array(MoveData)
     MoveType = np.array(MoveType)
@@ -121,7 +127,7 @@ def process_dataset(root_dir, output_file='processed_data.pkl'):
     plt.plot(sample_window[:, 0], label='LKneeAngles_x')
     plt.plot(sample_window[:, 1], label='LKneeAngles_y')
     plt.plot(sample_window[:, 2], label='LKneeAngles_z')
-    plt.title('Marker LKneeAngles - wartosci)')
+    plt.title('Marker LKneeAngles - wartosci')
     plt.xlabel('Klatka')
     plt.ylabel('Wartosc')
     plt.legend()
