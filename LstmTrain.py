@@ -10,6 +10,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('TkAgg')
 from sklearn.metrics import accuracy_score
+from LstmModelClass import MyLSTMModel
 
 # HYPERPARAMETRY
 WINDOW_SIZE = 100
@@ -19,28 +20,6 @@ NUM_LAYERS = 2
 BATCH_SIZE = 32
 EPOCHS = 10
 LEARNING_RATE = 1e-4
-
-
-class MyLSTMModel(nn.Module):
-    def __init__(self, input_size, hidden_size, num_layers, num_classes, dropout=0.5):
-        super(MyLSTMModel, self).__init__()
-        self.lstm = nn.LSTM(
-            input_size,
-            hidden_size,
-            num_layers,
-            batch_first=True,
-            dropout=dropout if num_layers > 1 else 0
-        )
-        self.dropout = nn.Dropout(dropout)
-        self.fc = nn.Linear(hidden_size, num_classes)
-
-    def forward(self, x):
-        out, _ = self.lstm(x)
-        out = out[:, -1, :]  # ostatni krok czasowy
-        out = self.dropout(out)
-        out = self.fc(out)
-        return out
-
 
 def train_model(MoveData, MoveType):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
