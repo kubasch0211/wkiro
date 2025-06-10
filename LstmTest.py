@@ -8,7 +8,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
 import torch
-import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 matplotlib.use('TkAgg')
 from LstmModelClass import MyLSTMModel
