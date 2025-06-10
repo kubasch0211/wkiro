@@ -13,7 +13,6 @@ from sklearn.metrics import accuracy_score
 from LstmModelClass import MyLSTMModel
 
 # HYPERPARAMETRY
-WINDOW_SIZE = 100
 NUM_FEATURES = 72  # 8 markerów * 3 (x,y,z)
 HIDDEN_SIZE = 64
 NUM_LAYERS = 2
